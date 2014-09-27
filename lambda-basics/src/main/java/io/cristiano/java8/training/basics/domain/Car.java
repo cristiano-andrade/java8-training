@@ -31,4 +31,8 @@ public class Car implements Serializable {
     public String getColor() {
         return color;
     }
+
+    public Plate getPlate() {
+        return plate;
+    }
 }

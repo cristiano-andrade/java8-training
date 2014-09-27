@@ -9,6 +9,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import io.cristiano.java8.training.basics.domain.Car;
+import io.cristiano.java8.training.basics.domain.CarRegistration;
+import io.cristiano.java8.training.basics.domain.Plate;
 import io.cristiano.java8.training.basics.service.CarService;
 
 public class CarServiceTest {
@@ -50,5 +52,32 @@ public class CarServiceTest {
         List<Car> expected = CarService.filter(cars, (Car c) -> "black".equals(c.getColor()));
         Assert.assertEquals(2, expected.size());
     }
+
+    @Test
+    public void should_register_a_car(){
+        final Car car  = new Car("COROLLA","2012","white");
+
+        CarRegistration carRegistration = (number,city,state) -> new Plate(number,city,state);
+        CarService.register(car,carRegistration.register("AAA-9999","SAO PAULO","SP"));
+
+        Assert.assertNotNull(car.getPlate());
+    }
+
+    @Test
+    public void should_register_a_car_with_reflective_plate(){
+        final Car car  = new Car("COROLLA","2012","white");
+
+        CarRegistration carRegistration = (number,city,state) -> {
+            Plate plate = new Plate(number,city,state);
+            plate.setAsReflective();
+            return plate;
+        };
+
+        CarService.register(car,carRegistration.register("AAA-9999","SAO PAULO","SP"));
+
+        Assert.assertNotNull(car.getPlate());
+        Assert.assertTrue(car.getPlate().isReflective());
+    }
+
 
 }
