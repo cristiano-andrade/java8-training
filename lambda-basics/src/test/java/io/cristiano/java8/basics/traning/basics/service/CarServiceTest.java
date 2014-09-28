@@ -2,7 +2,10 @@ package io.cristiano.java8.basics.traning.basics.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -54,6 +57,12 @@ public class CarServiceTest {
     }
 
     @Test
+    public void should_filter_black_cars_using_function() {
+        List<Car> expected = CarService.filter(cars, (Car c) -> "black".equals(c.getColor()));
+        Assert.assertEquals(2, expected.size());
+    }
+
+    @Test
     public void should_register_a_car(){
         final Car car  = new Car("COROLLA","2012","white");
 
@@ -79,5 +88,24 @@ public class CarServiceTest {
         Assert.assertTrue(car.getPlate().isReflective());
     }
 
+    @Test
+    public void should_sort_cars_by_color(){
+        Collections.sort(cars,(c1, c2) -> c1.getColor().compareTo(c2.getColor()));
+        Assert.assertEquals("black",cars.get(0).getColor());
+    }
+
+    @Test
+    public void should_sort_cars_by_color_using_method_reference(){
+        Collections.sort(cars,Comparator.comparing(Car::getColor));
+        Assert.assertEquals("black",cars.get(0).getColor());
+    }
+
+    @Test
+    public void should_sort_cars_by_color_using_method_reference_pass_by_pass(){
+        Function<Car,String> function = Car::getColor;
+        Comparator<Car> comparator = (c1,c2) -> function.apply(c1).compareTo(function.apply(c2));
+        Collections.sort(cars,comparator);
+        Assert.assertEquals("black",cars.get(0).getColor());
+    }
 
 }
